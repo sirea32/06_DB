@@ -52,36 +52,99 @@ ORDER BY POINT DESC;
 
 -- 6번 
 -- 학생 번호, 학생 이름, 학과 이름을 학생 이름 오름차순으로 조회하시오. … 
- 
+SELECT STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME
+FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+ORDER BY STUDENT_NAME ASC;
+
 -- 7번 
 -- 춘 기술대학교의 과목 이름, 해당 과목을 수업하는 학과 이름을 조회하시오. … 
+SELECT CLASS_NAME, DEPARTMENT_NAME
+FROM TB_CLASS
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO);
 
 -- 8번 
 -- 과목, 해당 과목 교수 이름을 조회하시오. 
+SELECT CLASS_NAME, PROFESSOR_NAME
+FROM TB_CLASS
+JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+JOIN TB_PROFESSOR USING(PROFESSOR_NO);
 
 -- 9번 
 -- 8번의 결과 중 '인문 사회' 계열에 속한 
 -- 과목명, 교수이름을 과목명 오름차순으로 조회하시오. 
- 
+SELECT CLASS_NAME, PROFESSOR_NAME
+FROM TB_CLASS TC
+JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+JOIN TB_PROFESSOR TP USING(PROFESSOR_NO)
+JOIN TB_DEPARTMENT TD ON (TD.DEPARTMENT_NO=TP.DEPARTMENT_NO)
+WHERE CATEGORY = '인문사회'
+ORDER BY CLASS_NAME ASC;
+
 -- 10번 
 -- 음악학과 학생들의 "학번", "학생 이름", "전체 평점"을 조회하시오. -- (단, 평점은 소수점 1자리까지만 반올림하여 표시한다.) 
- 
+SELECT STUDENT_NO, STUDENT_NAME,
+	ROUND(AVG(POINT), 1)
+FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+JOIN TB_GRADE USING (STUDENT_NO)
+WHERE DEPARTMENT_NAME = '음악학과'
+GROUP BY STUDENT_NO, STUDENT_NAME
+ORDER BY STUDENT_NO ASC;
+
+
 -- 11번 
 -- 학번이 A313047인 학생의 학과이름, 학생이름, 지도교수 이름을 조회하시오. 
+SELECT
+	DEPARTMENT_NAME, STUDENT_NAME, PROFESSOR_NAME
+FROM TB_STUDENT TS
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+JOIN TB_PROFESSOR TP ON (PROFESSOR_NO=COACH_PROFESSOR_NO)
+WHERE STUDENT_NO = 'A313047';
+
 
 -- 12번 
 -- 2007년도에 '인간관계론' 과목을 수강한 학생을 찾아 
 -- 학생이름과 수강학기를 조회하는 SQL을 작성하시오. 
+SELECT
+	STUDENT_NAME, TERM_NO
+FROM TB_STUDENT TS
+JOIN TB_GRADE TG ON(TG.STUDENT_NO=TS.STUDENT_NO)
+JOIN TB_CLASS USING(CLASS_NO)
+WHERE TERM_NO LIKE '2007%'
+AND CLASS_NAME = '인간관계론';
+
 
 -- 13번 
--- 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아 -- 과목 이름, 학과 이름을 조회하시오.  
- 
+-- 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아 
+-- 과목 이름, 학과 이름을 조회하시오.  
+SELECT
+	CLASS_NAME, DEPARTMENT_NAME
+FROM TB_CLASS 
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+LEFT JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+WHERE CATEGORY = '예체능'
+AND PROFESSOR_NO IS NULL;
+
+
 -- 14번 
--- 춘 기술대학교 서반아어학과 학생들의 지도교수를 게시하고자 한다.  -- 학생이름, 지도교수이름 학번이 높은 순서로 조회하는 SQL을 작성하시오. -- 단, 지도교수가 없을 경우 "지도교수 미지정"으로 표시 
+-- 춘 기술대학교 서반아어학과 학생들의 지도교수를 게시하고자 한다.  
+-- 학생이름, 지도교수이름 학번이 높은 순서로 조회하는 SQL을 작성하시오. 
+-- 단, 지도교수가 없을 경우 "지도교수 미지정"으로 표시 
+SELECT
+	STUDENT_NAME 학생이름, NVL(PROFESSOR_NAME, '지도교수 미지정') 지도교수
+FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+LEFT JOIN TB_PROFESSOR ON (PROFESSOR_NO=COACH_PROFESSOR_NO)
+WHERE DEPARTMENT_NAME = '서반아어학과'
+ORDER BY STUDENT_NO ASC;
+
 
 -- 15번 
 -- 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아 
 -- 학생의 학번, 이름, 학과, 이름, 평점을 조회하시오. 
+
+
 
 -- 16번 
 -- 환경조경학과 전공과목들의 과목 별 평점을 조회하시오. 
@@ -94,5 +157,10 @@ ORDER BY POINT DESC;
 -- 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번을 조회하시오 
 
 -- 19번 
--- 춘 기술대학교의 "환경조경학과"가 속한 같은 계열 학과들의 -- 학과 별 전공과목 평점을 파악하기 위한 적절한 SQL문을 작성하시오 -- 단, 출력헤더는 "계열 학과명", "전공평점"으로 표시되도록 하고,  -- 평점은 소수점 첫째자리까지만 반올림하여 표시
+-- 춘 기술대학교의 "환경조경학과"가 속한 같은 계열 학과들의 
+-- 학과 별 전공과목 평점을 파악하기 위한 적절한 SQL문을 작성하시오 
+-- 단, 출력헤더는 "계열 학과명", "전공평점"으로 표시되도록 하고,  
+-- 평점은 소수점 첫째자리까지만 반올림하여 표시
+
+
 
