@@ -70,12 +70,26 @@ SELECT * FROM "MEMBER";
 -- 샘플 데이터 비밀번호 암호화 적용
 UPDATE "MEMBER"
 SET
-	"MEMBER_PW" = '$2a$10$dm4.2Me8NJS0JnT3OKKHhurW1ckGA0iL8Pwz6jTOehYpGT6UnCsEK'
+	"MEMBER_PW" = '$2a$10$1bVvCWEaCFrxWafq9v48sOcm8fKJeBzrRf0yK1atPZp/.x4XleRh6'
 WHERE
-	"MEMBER_NO" = 1;
+	"MEMBER_NO" = 3;
 
 COMMIT;
 
 SELECT * FROM "MEMBER";
+
+
+/* 회원 정보 수정 */
+
+UPDATE "MEMBER"
+SET
+	MEMBER_NICKNAME = ?,
+	MEMBER_TEL = ?,
+	MEMBER_ADDRESS = ?
+WHERE
+	MEMBER_NO = ?;
+
+DELETE "MEMBER";
+
 
 
