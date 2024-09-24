@@ -72,7 +72,7 @@ UPDATE "MEMBER"
 SET
 	"MEMBER_PW" = '$2a$10$1bVvCWEaCFrxWafq9v48sOcm8fKJeBzrRf0yK1atPZp/.x4XleRh6'
 WHERE
-	"MEMBER_NO" = 3;
+	"MEMBER_NO" = 6;
 
 COMMIT;
 
@@ -91,5 +91,24 @@ WHERE
 
 DELETE "MEMBER";
 
+/* 모든 회원 복구 */
+UPDATE 
+	"MEMBER"
+SET
+	MEMBER_DEL_FL = 'N';
+
+COMMIT;
+
+/* 비밀번호 z1x2c3! */
+
+-- 이메일 중복 검사(탈퇴 안한 회원 중 중복 확인)
+SELECT COUNT(*)
+FROM "MEMBER"
+WHERE MEMBER_EMAIL = 'member033@kh.or.kr'
+AND   MEMBER_DEL_FL = 'N';
 
 
+SELECT COUNT(*)
+FROM "MEMBER"
+WHERE MEMBER_NICKNAME = '샘플'
+AND MEMBER_DEL_FL = 'N';
